@@ -8,6 +8,7 @@ and URL scheme for updates.
 import sqlite3
 import subprocess
 import urllib.parse
+import os
 from pathlib import Path
 from datetime import datetime
 from typing import Optional, List, Dict, Any
@@ -23,9 +24,16 @@ class BearNotesClient:
 
         Args:
             db_path: Path to Bear database. Defaults to standard Bear location.
+                    Can be overridden with BEAR_DB_PATH environment variable.
         """
         if db_path is None:
-            db_path = Path.home() / "Library/Group Containers/9K33E3U3T4.net.shinyfrog.bear/Application Data/database.sqlite"
+            # Check for environment variable first (for Docker)
+            env_path = os.environ.get('BEAR_DB_PATH')
+            if env_path:
+                db_path = Path(env_path)
+            else:
+                # Default to standard macOS Bear location
+                db_path = Path.home() / "Library/Group Containers/9K33E3U3T4.net.shinyfrog.bear/Application Data/database.sqlite"
 
         self.db_path = db_path
 

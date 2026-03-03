@@ -35,6 +35,7 @@ RUN mkdir -p /bear-data
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
+ENV BEAR_DB_PATH="/bear-data/Application Data/database.sqlite"
 
 # Add metadata
 LABEL maintainer="Lee Truong"
