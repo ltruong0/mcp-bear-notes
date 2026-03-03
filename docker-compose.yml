@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  mcp-bear-notes:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mcp-bear-notes:latest
+    container_name: mcp-bear-notes
+    stdin_open: true
+    tty: true
+    volumes:
+      # Mount Bear database directory (read-only)
+      # Adjust this path if your Bear database is in a different location
+      - ${HOME}/Library/Group Containers/9K33E3U3T4.net.shinyfrog.bear:/bear-data:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    # Note: For MCP servers, we typically don't expose ports as they communicate via stdio
+    # The container will run and wait for stdio input/output
+    
+    # Health check to ensure the container is running
+    healthcheck:
+      test: ["CMD", "python", "-c", "import mcp_bear_notes; print('OK')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+# Optional: Add a network for isolation
+networks:
+  default:
+    name: mcp-bear-notes-network
+
+# Docker Compose configuration for MCP Bear Notes Server
